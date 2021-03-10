@@ -9,9 +9,6 @@ const Footer = ({ socialLinks }) => (
         display: 'flex',
         justifyContent: 'space-around',
         p: ['16px 0', '16px 95px'],
-        /* padding-left: 26px; */
-        /* text-align: center; */
-        /* padding: 16px 95px; */
     })}
   >
     {socialLinks
