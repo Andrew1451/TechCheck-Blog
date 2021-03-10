@@ -5,7 +5,7 @@
  */
 
 const darkBlue = `#007acc`
-const lightBlue = `#66E0FF`
+// const lightBlue = `#66E0FF`
 const blueGray = `#282c35`
 
 export default {
@@ -13,6 +13,11 @@ export default {
         text: blueGray,
         primary: darkBlue,
         heading: blueGray,
-        background: '#2f048a'
+        background: 'white'
     },
+    styles: {
+        Header: {
+            background: 'black'
+        }
+    }
 }
