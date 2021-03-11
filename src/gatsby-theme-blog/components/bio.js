@@ -46,7 +46,7 @@
            role="presentation"
          />
        )}
-       <Styled.div>
+       <Styled.div> {/* eslint-disable-line */}
          <BioContent />
        </Styled.div>
      </Flex>
