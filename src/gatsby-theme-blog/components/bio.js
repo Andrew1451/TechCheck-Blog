@@ -27,10 +27,10 @@
            fixed={avatar.childImageSharp.fixed}
            alt={author}
            css={css({
-             mr: 2,
+             mr: 16,
              mb: 0,
-             width: 48,
-             minWidth: 48,
+             width: 60,
+             minWidth: 60,
              borderRadius: 99999,
            })}
          />
@@ -39,8 +39,8 @@
            css={css({
              mr: 2,
              mb: 0,
-             width: 48,
-             minWidth: 48,
+             width: 60,
+             minWidth: 60,
              borderRadius: 99999,
            })}
            role="presentation"
@@ -62,7 +62,7 @@
      }
      avatar: file(absolutePath: { regex: "/avatar.(jpeg|jpg|gif|png)/" }) {
        childImageSharp {
-         fixed(width: 48, height: 48) {
+         fixed(width: 60, height: 60) {
            ...GatsbyImageSharpFixed
          }
        }

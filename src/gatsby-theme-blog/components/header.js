@@ -35,7 +35,11 @@ const Title = ({ children, location }) => {
       <Styled.h3 // eslint-disable-line
         as="p"
         css={css({
-          my: 0,
+            textAlign: 'center',
+            fontSize: '26px',
+            fontWeight: '600',
+            marginTop: '25px',
+            mb: `0`
         })}
       >
         <Styled.a
@@ -43,7 +47,7 @@ const Title = ({ children, location }) => {
           css={css({
             boxShadow: `none`,
             textDecoration: `none`,
-            color: `primary`,
+            color: `#657796`,
           })}
           to={`/`}
         >
@@ -60,7 +64,7 @@ const Header = ({ children, title, ...props }) => {
             file(relativePath: {eq: "laptop-pic.jpg"}) {
             id
             childImageSharp {
-                fluid(maxHeight: 276) {
+                fluid(maxHeight: 600) {
                     ...GatsbyImageSharpFluid
                 }
             }
@@ -68,47 +72,50 @@ const Header = ({ children, title, ...props }) => {
       }
     `
     const data = useStaticQuery(imageQuery);
-    return (
-        <div sx={{height: ['200px', 'auto']}}>
-
-        
-        <Image sx={{height: ['200px', '500px']}} fluid={data.file.childImageSharp.fluid} />
-        <div sx={{
-            backgroundColor: '#cacdd2',
-            height: '205px',
-            position: 'relative',
-            top: ['-200px', '-366px'],
-            width: ['100%', '70%'],
-            margin: 'auto',
-            /* padding-left: 20px; */
-            }}> 
-            <header>
-                <SkipNavLink sx={{ variant: `styles.a` }} />
-                <div
-                css={css({
-                    maxWidth: `container`,
-                    mx: `auto`,
-                    px: 3,
-                    pt: 4,
-                })}
-                >
-                <div
-                    css={css({
-                    display: `flex`,
-                    justifyContent: `space-between`,
-                    alignItems: `center`,
-                    mb: 4,
-                    })}
-                >
-                    <Title {...props}>{title}</Title>
-                    {children}
+    if (props.location.pathname === rootPath) {
+        return (
+            <div sx={{height: ['200px', '523px']}}>            
+                <Image sx={{height: ['200px', '500px']}} fluid={data.file.childImageSharp.fluid} />
+                <div sx={{
+                    backgroundColor: '#cacdd2',
+                    height: '205px',
+                    position: 'relative',
+                    top: ['-200px', '-366px'],
+                    width: ['100%', '70%'],
+                    maxWidth: '1007px',
+                    margin: 'auto',
+                    boxShadow: ['none', '0 0 13px #ababab']
+                    }}> 
+                    <header>
+                        <SkipNavLink sx={{ variant: `styles.a` }} />
+                        <div
+                        css={css({
+                            maxWidth: `container`,
+                            mx: `auto`,
+                            px: 3,
+                            pt: 4,
+                        })}
+                        >
+                        <div
+                            css={css({
+                            display: `flex`,
+                            justifyContent: `space-between`,
+                            alignItems: `center`,
+                            mb: 4,
+                            })}
+                        >
+                            <Title {...props}>{title}</Title>
+                            {children}
+                        </div>
+                        {props.location.pathname === rootPath && <Bio />}
+                        </div>
+                    </header>
                 </div>
-                {props.location.pathname === rootPath && <Bio />}
-                </div>
-            </header>
-        </div>
-        </div>
-    )
+            </div>
+        )
+    } else {
+        return <Title {...props}>{title}</Title>
+    }
 }
 
 export default Header
