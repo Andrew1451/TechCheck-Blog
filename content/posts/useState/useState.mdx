@@ -1,0 +1,92 @@
+---
+title: React Hooks - useState
+date: 2021-03-14
+image: ./useState-thumbnail.png
+imageAlt: TechCheck logo
+---
+
+## What is useState?
+
+The useState hook is the most popular and widely used hook in React. It lets you have state in a functional component. Before the useState hook came out, (React 16.8 &#127881;), you could only have state in class based components &#128557;.
+
+## How do you use it?
+
+![ill_show_you_jurassic_park](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/y09xfbpknqsm62f7zzih.gif)
+
+useState is a function. 
+
+```javascript
+useState()
+```
+
+That function returns 2 things: the state, and a function to update that state. You typically access those through array destructuring.
+
+```javascript
+const [state, setState] = useState()
+```
+
+You can pass that function an initial state. 
+
+```javascript
+const [state, setState] = useState(initialState)
+```
+
+That initial state can be anything: a number, a boolean, a string... It can even be a function that returns the initial state.
+
+> &#128161; That function would only be called on the 
+> initial render. Not every time the state is updated or on
+> every re-render. So having a more expensive function here is
+> ok if you need it.
+
+We'll start off with the classic counter example. So the initial state will be 0.
+
+```javascript
+const [state, setState] = useState(0)
+```
+
+It's good practice to name the state (and setState) something that refers to that state. Since we're using our state as a counter, we'll name our state count (and our updater function setCount).
+
+```javascript
+const [count, setCount] = useState(0)
+```
+
+## Accessing the State
+
+We can access our state in our component simply by using the const variable we assigned to our state. In our case, `count`.
+
+```javascript
+<p>Our count number is: {count}</p>
+```
+This will render:
+
+![Screen Shot 2021-03-14 at 7.53.27 AM](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/a8vcewkz8crn3x7z3mk4.png)
+
+## Updating the State
+
+Now we'll create a button that when clicked, it will update the state.
+
+```javascript
+<button onClick={() => setCount(count + 1)}>count it!</button>
+```
+![5dc6bdd97b5861dd5b00b7bff123343a](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/im9a1gnn4ybbq1hdzqdv.gif)
+ 
+In this example, we're inserting the code to update the state right inside setCount (count + 1). We could also call a function that has more logic, then update the state in that function.
+
+```javascript
+const countHandler = () => {
+  // more logic could go here 
+  //(reach out to an api, more calculations, etc..)
+  const updatedCount = count + 1;
+  setCount(updatedCount)
+}
+<button onClick={countHandler}>count it!</button>
+```
+This would have the same behavior.
+ 
+## Conclusion
+
+I go over a lot more examples in my YouTube video about useState [here](https://youtu.be/4mSxNGLlWJ8), and I focus specifically on form handling [here](https://youtu.be/faabxyOObwk).
+
+Hope this helped someone and thank you for reading!
+
+-Andrew

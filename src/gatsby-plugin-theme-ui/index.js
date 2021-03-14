@@ -10,6 +10,13 @@ export default {
         h2: {
             fontFamily: 'Arial'
         },
+        p: {
+            fontSize: '19px',
+            lineHeight: '30px'
+        },
+        img: {
+            width: '100%'
+        },
     }
     
 }
