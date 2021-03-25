@@ -1,0 +1,116 @@
+---
+title: React Hooks - useEffect
+date: 2021-03-24
+image: ./useEffect.png
+imageAlt: TechCheck logo
+---
+
+* [What is useEffect?](#what)
+* [How Do You Use It?](#how)
+* [Controlling When useEffect is Called](#when)
+* [The Dependency Array](#array)
+* [Cleaning Up](#clean-up)
+
+## What is useEffect? <a name='what'></a>
+If you're familiar with the lifecycle methods of class based components (componentDidMount, componentDidUpdate, etc..), the useEffect hook is basically all of those methods rolled up into one convenient function. If you're *not* familiar with those lifecycle methods, you're very lucky &#128514; &#128557;.
+
+useEffect is a function that you can configure to run every time a component mounts.. or unmounts.. or only on the initial render.. You can reach out to a third party API, or your own backend to retrieve data. It's very powerful. It's also not as complicated as it may seem.
+
+## How Do You Use It? <a name='how'></a>
+![ill_show_you_jurassic_park](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/y09xfbpknqsm62f7zzih.gif)
+
+You'll start off by importing it from React. Note that we have it inside curly braces because it's a named import.
+
+```javascript
+import { useEffect } from 'react';
+```
+As stated before, it's a function. So you'll call that function.
+```javascript
+useEffect()
+```
+You'll pass an anonymous function into that function as an argument. That's the code you want to run when useEffect is called.
+```javascript
+useEffect(() => {
+    // executable code here.
+    // grab data, update state, etc..
+})
+```
+## Controlling When useEffect is Called <a name='when'></a>
+So we're passing a function into useEffect. As of now, that function (and useEffect itself) will be called *everytime* the component re-renders. If there's an input and the user is typing, that component will re-render on *every* keystroke. 
+
+If you're reaching out to your backend to retrieve some data, you probably don't want to do that on every keystroke.
+
+That's where the dependency array comes in.
+
+## The Dependency Array <a name='array'></a>
+The function we're sending into useEffect is an argument. It can also take a second argument, which is a dependency array. 
+
+```javascript
+useEffect(() => {
+    // this function is an argument
+}, [/* this array is, too */])
+```
+If you put a property in this array, useEffect will only be called when that property changes.
+
+> Except for the initial render. 
+> useEffect will always run at least
+> once; on the initial render.
+
+So let's say you have some state. We'll use a counter example. If you want useEffect to run only when that `count` property changes, you'll put `count` in the dependency array.
+
+```javascript
+useEffect(() => {
+    console.log(count)
+}, [count])
+```
+
+Now let's say you want useEffect to run on the initial render, but not on any re-render. No matter what properties change. For that, you'd pass an empty dependency array. 
+
+```javascript
+useEffect(() => {
+    console.log(count)
+}, [])
+```
+
+> Here, you're essentially telling 
+> useEffect to run when these
+> properties change. Then listing 
+> no properties.
+
+
+## Cleaning Up <a name='clean-up'></a>
+You know that function that we send into another function? Well, that function can return something...
+
+...another function.
+
+![infinite sunglasses loop gif](https://media3.giphy.com/media/1jnyRP4DorCh2/giphy.gif)
+
+
+
+Ok hear me out.
+
+That function you can return, is a *clean up* function. That's where you would unsubscribe to a subscription or clear a setTimeout that you don't need anymore. 
+
+For example, if we have a setTimeout that's supposed to be called after 9 seconds, and the user is typing, (causing a bunch of re-renders), we don't want a bunch of 9 second timers going on in the background. So we'll return a function which is a clearTimeout.
+
+```javascript
+useEffect(() => {
+    const timer = setTimeout(() => {
+        console.log('time!')
+    }, 9000)
+    return () => {
+        clearTimeout(timer)
+    }
+}, [])
+```
+
+Now, any time that component re-renders, (or if the user goes to a different page, and the timer isn't needed anymore), the asynchronous timeout will not be using memory in the background. 
+
+## Conclusion <a name='conclusion'></a>
+useEffect is a very powerful part of React. It may seem like a lot at first, but once you understand it and use it a couple times, it's not so bad.
+
+I have a [YouTube video](https://youtu.be/ijdCDd8Wg2o) with a few different examples. I also show exactly when useEffect is being called in different situations, and how to have more control over it.
+
+Hope this helped somebody and thank you for reading!
+
+-Andrew
