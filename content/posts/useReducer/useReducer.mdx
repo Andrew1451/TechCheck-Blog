@@ -1,0 +1,157 @@
+---
+title: Reack Hooks - useReducer
+date: 2021-03-28
+image: ./useReducer.png
+imageAlt: Reack Hooks - useReducer
+---
+
+## What is it?
+The useReducer hook is great to use if you need to handle more complex state. 
+
+If you're familiar with Redux, it's very similar to that, only you'd typically only use it for a component or two.
+
+## Complex state
+Let's say you're fetching some data, and you want to display: 
+
+  * "loading..." while it's fetching
+  * the data once you have it
+  * or an error if there is one
+
+You'll want all three of these to be in sync with each other. If you get the data, you want to make sure it's not loading and there's no error. If you get an error, it's not loading and there's no data.
+
+This is a good use case for useReducer! 
+
+## How to use it
+We'll have to pass two things into the useReducer hook. A reducer, which we'll use to manage our state; and an initial state to start working off of. 
+
+Our initial state will be an object containing three keys: loading, data, and error.
+
+Our reducer will listen for three different action types, and update the state accordingly. Those action types will be fetchDataStart, fetchDataSuccess, and fetchDataFail.
+
+We'll put those in our file, but outside of the component: 
+
+```javascript
+//App.js
+import React, { useReducer } from 'react';
+
+const initialState = {
+  loading: false,
+  data: null,
+  error: null
+}
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'fetchDataStart':
+      return {
+        ...state,
+        loading: true,
+        data: null,
+        error: null
+      }
+    case 'fetchDataSuccess':
+      return {
+        ...state,
+        loading: false,
+        data: action.data,
+        error: null
+      }
+    case 'fetchDataFail':
+      return {
+        ...state,
+        loading: false,
+        data: null,
+        error: 'whoops =/'
+      }
+    default: return state
+   }
+}
+
+const App = () => {
+  return (
+    <h1>App Component</h1>
+  )
+}
+```
+
+Notice we saved those under the constant variables: `reducer` and `initialState`. So we'll pass those into the useReducer hook.
+
+```javascript
+const App = () => {
+  useReducer(reducer, initialState);
+  return (
+    <h1>App Component</h1>
+  )
+}
+```
+
+The useReducer hook will return two things in an array: the state, and an action dispatcher to update the state. 
+
+We'll grab those with array destructuring, similar to state and setState with the useState hook.
+
+```javascript
+const App = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    <h1>App Component</h1>
+  )
+}
+```
+
+## Dispatching actions
+Our useReducer hook is all setup. Now, let's use it!
+
+We'll create a function for fetching data, and we'll dispatch different actions based on the state of that fetch request.
+
+(Those actions are being checked for in our reducer via the switch statement and our case clauses.)
+
+```javascript
+const App = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const fetchData = () => {
+     dispatch({type: 'fetchDataStart'})
+     fetch('ourbackend.com/data')
+     .then(res => {
+        dispatch({
+          type: 'fetchDataSuccess',
+          data: res.data
+        })
+     })
+     .catch(error => {
+        dispatch({type: 'fetchDataFail'})
+     })
+   }
+   return (
+      <h1>App Component</h1>
+   )
+}
+```
+
+## Accessing the state
+Accessing the state is very easy. useReducer returned that in the array we destructured. We saved it to the constant variable, `state`.
+
+That state (our initial state and the updated state) is an object. So we'll access the values right in our component like so: 
+
+```javascript
+  return (
+     <h1>App Component</h1>
+     <p>{state.loading}</p>
+     <p>{state.data}</p>
+     <p>{state.error}</p>
+  )
+```
+
+## Conclusion
+The useReducer hook is extremely helpful when different states depend on each other.
+
+As for bringing in Redux, I'll typically do that if there's complex state for the entire application. If it's only for a component or two, I'll use useReducer.
+
+I have a YouTube video where I go into more detail. I explain the reducer function in greater depth there as well.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ZtFeOiylMr8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+If you like learning about similar topics, feel free to check out my [YouTube](https://www.youtube.com/channel/UCD0JOhEl8HvPowpg8Ri3CvA) and [Instagram](https://www.instagram.com/techcheck__/).
+
+Hope this helped somebody and thanks for reading!
+
+-Andrew
