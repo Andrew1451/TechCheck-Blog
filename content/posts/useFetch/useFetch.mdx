@@ -1,0 +1,153 @@
+---
+title: Custom Hook - useFetch
+date: 2021-03-28
+image: ./useFetch.png
+imageAlt: Custom Hook - useFetch
+---
+
+## Why useFetch?
+
+It's very common to fetch data when the user goes to a certain page. We also use common logic when fetching that data. 
+
+There's also a fair amount of boilerplate/logic that crowds our components and it's not very DRY (Don't Repeat Yourself).
+
+These are all good reasons to make a custom hook. We can outsource that boilerplate/logic into one separate file. That file will hold the function (hook) which will return for us what we need to use in our components. 
+
+## The Old Way
+
+In this example, I'll use the `useState` hook to keep track of the loading state, any error, and the data. I'll use the `useEffect` hook to run all of that code. Lastly, I'm using axios to fetch the data, and a cancel token to cancel any unfinished requests that we don't need anymore.
+
+```javascript
+//App.js
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import './App.css';
+
+function App() {
+  const [quote, setQuote] = useState(null);
+  const [loading, setLoading] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+      setLoading('loading...')
+      setQuote(null);
+      setError(null);
+      const source = axios.CancelToken.source();
+      axios.get('https://api.quotable.io/random', { cancelToken: source.token })
+      .then(res => {
+          setLoading(false);
+          setQuote(res.data.content);
+      })
+      .catch(err => {
+          setLoading(false)
+          setError('An error occurred. Awkward..')
+      })
+      return () => {
+          source.cancel();
+      }
+  }, [])
+
+  return (
+    <div className="App">
+      <button onClick={fetchQuote}>Fetch Quote</button>
+      { loading && <p>{loading}</p> }
+      { quote && <p>"{quote}"</p> }
+      { error && <p>{error}</p> }
+    </div>
+  )
+}
+
+export default App;
+```
+
+That's a lot of code. Let's move most of it.
+
+## The New Way
+
+We'll create another file called `useFetch.js`. You want to start the name of a custom hook with "use" so that React knows to treat it like a hook.
+
+Let's copy over the import statements, all 3 useStates, and the useEffect function. 
+
+```javascript
+//useFetch.js
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+      setLoading('loading...')
+      setData(null);
+      setError(null);
+      const source = axios.CancelToken.source();
+      axios.get(url, { cancelToken: source.token })
+      .then(res => {
+          setLoading(false);
+          //checking for multiple responses for more flexibility 
+          //with the url we send in.
+          res.data.content && setData(res.data.content);
+          res.content && setData(res.content);
+      })
+      .catch(err => {
+          setLoading(false)
+          setError('An error occurred. Awkward..')
+      })
+      return () => {
+          source.cancel();
+      }
+  }, [url])
+
+  return { data, loading, error }
+
+export default useFetch;
+```
+
+You may have noticed some changes. First of all, the function (which is our hook), is named useFetch. It receives a parameter which is the url we want to get data from.
+
+We also changed `setQuote` to `setData`, making it more versatile. Notice that we also check for multiple responses to make it more flexible as well.
+
+Lastly, our useFetch function (hook) returns our data, loading, and any error.
+
+> I put those in an object so we can use *object* destructuring when accessing those in our component. That way, the order doesn't matter when we destructure them, and we can rename them if we want. I'll show you that next.
+
+## Using useFetch in Our Component
+
+So, back in our App component, we'll import our useFetch hook from `useFetch.js`, and pass in the url we want to fetch data from. We'll use object destructuring to access what we need. Lastly, we'll rename data to quote.
+
+```javascript
+import useFetch from './useFetch';
+import './App.css';
+
+function App() {
+  const { data: quote, loading, error } = useFetch('https://api.quotable.io/random')
+    
+  return (
+    <div className="App">
+      { loading && <p>{loading}</p> }
+      { quote && <p>"{quote}"</p> }
+      { error && <p>{error}</p> }
+    </div>
+  );
+}
+
+export default App;
+```
+
+Muuuuuch cleaner 😎.
+
+## Conclusion
+
+Custom hooks are very useful for cleaning up your code. You can use React hooks inside of your custom hooks (they're all functions after all! 👍). You can encapsulate a lot of repetitive logic, then return what you need from the custom hook.
+
+I have a YouTube video if you want to see it in action.
+
+{% youtube T_yIz6wUY8c %}
+
+If you like learning about similar topics, feel free to check out my [YouTube](https://www.youtube.com/channel/UCD0JOhEl8HvPowpg8Ri3CvA) or [Instagram](https://www.instagram.com/techcheck__/).
+
+Hope this helped somebody and thanks for reading!
+
+-Andrew
