@@ -1,0 +1,108 @@
+---
+title: React Hooks - useContext
+date: 2021-05-05
+image: ./hooks-useContext.png
+imageAlt: React Hooks - useContext
+---
+
+## What is it?
+
+The useContext hook is a great hook to use when you need to send props down through multiple, nested child components. 
+
+Instead of passing it through every single component on the way down, you can define it in the parent component. Then, bring it into the nested component where you need it, while bypassing the middle components you'd normally have to send it through.
+
+## Here's an Example
+
+Let's say you have an App component. Inside that App component, you have a Profile component. Inside the Profile component, you have a Greeting component.
+
+So that's:
+```javascript
+App --> Profile --> Greeting
+```
+Now, let's say you have a user in your App (parent) component, and you want to pass the user property into the Greeting (nested child) component.
+
+Normally, you'd have to send that property through the Profile component, then into the Greeting component. Like so:
+```javascript
+//App.js
+const App = () => {
+  let user = 'Shred Flanders';
+  return <Profile user={user} />
+}
+
+//Profile.js
+const Profile = props => {
+ return <Greeting user={props.user}/>
+}
+
+//Greeting.js
+const Greeting = props => {
+  return `Welcome, {props.user}!`
+}
+```
+## Create a Context
+To start using useContext, you must first create a context. So, in our App (parent) component, we'll import createContext from React. Then, create a user context.
+```javascript
+//App.js
+import { createContext } from 'react'
+export const UserContext = createContext();
+```
+> Note: we're exporting the UserContext so we can import it
+> into nested components later.
+
+With that UserContext in place, we can wrap a *provider* around components, then consume the property in any child component.
+
+So, we'll set that provider where we want it and pass it a property.
+```javascript
+//App.js
+import { createContext } from 'react'
+export const UserContext = createContext();
+const App = () => {
+  let user = 'Shred Flanders';
+  return (
+  <UserContext.Provider value={user}>
+    <Profile />
+  </UserContext.Provider>
+  )
+}
+```
+Note that now, we're not sending the user property into Profile. We're sending it into the UserContext Provider via `value={user}`. We can then grab that value in any of the nested components.
+
+## Consume the Context
+To consume the value in any nested component, we have to import the useContext hook, and the context we want to use.
+
+So in the Greeting component:
+```javascript
+//Greeting.js
+import { useContext } from 'react'
+import { UserContext } from './App.js'
+```
+Then, we'll pass our `UserContext` into the useContext hook, letting the hook know which context we want to use.
+
+```javascript
+const Greeting = props => {
+  const user = useContext(UserContext);
+}
+```
+The useContext will return the value that we sent into  `UserContext.Provider value={user}`. We're saving it in the Greeting component to a constant variable, `user`.
+
+Now, we're free to use that constant/value in our Greeting component. 
+(and we never had to touch the Profile component! &#127881;)
+
+```javascript
+const Greeting = props => {
+  const user = useContext(UserContext);
+  return `Welcome, {user}!`
+}
+```
+## Conclusion
+The useContext hook is a very useful tool in React. It could be used for changing a theme and updating that theme in the different components it needs to. It prevents "prop drilling" like I've shown you here.
+
+If you want a more visual example, check out my YouTube video here:
+
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/WXhTx1xfmnw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+If you like learning about similar topics, feel free to check out my [YouTube](https://www.youtube.com/channel/UCD0JOhEl8HvPowpg8Ri3CvA) and [Instagram](https://www.instagram.com/techcheck__/).
+
+Hope this helped somebody and thanks for reading!
+
+-Andrew
